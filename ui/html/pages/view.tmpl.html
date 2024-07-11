@@ -1,0 +1,14 @@
+{{define "title"}}Team: {{.Name}}{{end}}
+
+{{define "main"}}
+    <div class="team">
+        <div class="metadata">
+            <strong>{{.Name}}</strong>
+            <span>Score: {{.Score}}</span>
+        </div>
+        <img src="/team/gif?id={{.ID}}">
+        <div class="metadata">
+            <strong>Since</strong>: {{.Created}}
+        </div>
+    </div>
+{{end}}
