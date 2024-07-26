@@ -16,5 +16,5 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("/team/create", app.teamCreate)
 	// mux.HandleFunc("/team/vote", app.teamVote)
 
-	return mux
+	return secureHeaders(mux)
 }
