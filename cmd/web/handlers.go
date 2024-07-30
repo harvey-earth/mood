@@ -96,7 +96,7 @@ func (app *application) teamCreatePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	http.Redirect(w, r, fmt.Sprintf("/team/view/%d", id), http.StatusSeeOther)	
+	http.Redirect(w, r, fmt.Sprintf("/team/view/%d", id), http.StatusSeeOther)
 }
 
 // Returns page showing team information
@@ -165,5 +165,49 @@ func (app *application) teamVote(w http.ResponseWriter, r *http.Request) {
 	err = ts.ExecuteTemplate(w, "base", team)
 	if err != nil {
 		app.serverError(w, err)
-	}	
+	}
+}
+func (app *application) teamVotePost(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	team, err := app.teams.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	switch value := r.PostForm.Get("vote"); value {
+	case "5":
+		newScore := max(team.Score-(50(1/4)), 2)
+	case "4":
+		newScore := max(team.Score-(20(1/4)), 2)
+	case "3":
+		newScore := team.Score
+	case "2":
+		newScore := max(team.Score+(20(1/4)), 2)
+	case "1":
+		newScore := max(team.Score+(50(1/4)), 2)
+	default:
+		// Error condition
+
+	}
+	_, err := app.teams.Update(id, newScore)
+	if err != nil {
+		// Error handle
+	}
+	http.Redirect(w, r, fmt.Sprintf("/team/view/%d", id), http.StatusSeeOther)
 }

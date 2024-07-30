@@ -49,5 +49,10 @@ func (m *TeamModel) Get(id int) (*Team, error) {
 }
 
 func (m *TeamModel) Update(id int, score int) (int, error) {
+	stmt := "UPDATE teams SET score = ? WHERE id = ?"
+	result, err := m.DB.Exec(stmt, score, id)
+	if err != nil {
+		return nil, err
+	}
 	return 0, nil
 }
