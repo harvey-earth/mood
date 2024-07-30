@@ -34,14 +34,17 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// This function needs to be converted to a static asset to serve from homepage
 func (app *application) badGif(w http.ResponseWriter, r *http.Request) {
 	lissajous(w, 50, palette2)
 }
 
+// This function needs to be converted to a static asset to serve from homepage
 func (app *application) goodGif(w http.ResponseWriter, r *http.Request) {
 	lissajous(w, 1, palette1)
 }
 
+// Takes team id and gets score from database. Returns a lissajous gif based on score.
 func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
@@ -60,6 +63,7 @@ func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
 	lissajous(w, float64(team.Score), palette1)
 }
 
+// Returns form to create a new team
 func (app *application) teamCreate(w http.ResponseWriter, r *http.Request) {
 	files := []string{
 		"./ui/html/base.tmpl.html",
@@ -78,6 +82,7 @@ func (app *application) teamCreate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Creates new team and redirects to view
 func (app *application) teamCreatePost(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -94,6 +99,7 @@ func (app *application) teamCreatePost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/team/view/%d", id), http.StatusSeeOther)	
 }
 
+// Returns page showing team information
 func (app *application) teamView(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -126,6 +132,38 @@ func (app *application) teamView(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	// lissajous(w, float64(team.Score), palette1)
-	// fmt.Fprintf(w, "%+v", team)
+}
+
+func (app *application) teamVote(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	team, err := app.teams.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/vote.tmpl.html",
+	}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	err = ts.ExecuteTemplate(w, "base", team)
+	if err != nil {
+		app.serverError(w, err)
+	}	
 }

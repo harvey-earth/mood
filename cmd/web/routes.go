@@ -19,7 +19,8 @@ func (app *application) routes() http.Handler {
 	r.HandleFunc("/team/gif", app.gifView)
 	r.HandleFunc("/team/create", app.teamCreate).Methods("GET")
 	r.HandleFunc("/team/create", app.teamCreatePost).Methods("POST")
-	// mux.HandleFunc("/team/vote", app.teamVote)
+	r.HandleFunc("/team/vote/{id}", app.teamVote).Methods("GET")
+	// r.HandleFunc("/team/vote/{id}", app.teamVotePost).Methods("POST")
 
 	return app.recoverPanic(app.logRequest(secureHeaders(r)))
 }
