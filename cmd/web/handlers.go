@@ -103,7 +103,7 @@ func (app *application) teamCreatePost(w http.ResponseWriter, r *http.Request) {
 func (app *application) teamView(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
-	if err != nil || id < 1 {
+	if err != nil || id < 0 {
 		app.notFound(w)
 		return
 	}
@@ -168,6 +168,7 @@ func (app *application) teamVote(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (app *application) teamVotePost(w http.ResponseWriter, r *http.Request) {
+	var newScore int
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil || id < 1 {
@@ -184,7 +185,7 @@ func (app *application) teamVotePost(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	err := r.ParseForm()
+	err = r.ParseForm()
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
@@ -192,22 +193,23 @@ func (app *application) teamVotePost(w http.ResponseWriter, r *http.Request) {
 
 	switch value := r.PostForm.Get("vote"); value {
 	case "5":
-		newScore := max(team.Score-(50(1/4)), 2)
+		newScore = max(team.Score-5, 2)
 	case "4":
-		newScore := max(team.Score-(20(1/4)), 2)
+		newScore = max(team.Score-2, 2)
 	case "3":
-		newScore := team.Score
+		newScore = team.Score
 	case "2":
-		newScore := max(team.Score+(20(1/4)), 2)
+		newScore = max(team.Score+2, 2)
 	case "1":
-		newScore := max(team.Score+(50(1/4)), 2)
+		newScore = max(team.Score+5, 2)
 	default:
 		// Error condition
+		app.clientError(w, http.StatusBadRequest)
 
 	}
-	_, err := app.teams.Update(id, newScore)
+	err = app.teams.Update(id, newScore)
 	if err != nil {
-		// Error handle
+		app.serverError(w, err)
 	}
 	http.Redirect(w, r, fmt.Sprintf("/team/view/%d", id), http.StatusSeeOther)
 }
