@@ -37,9 +37,13 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 // Takes team id and gets score from database. Returns a lissajous gif based on score.
 func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
+	// color will hold the palette color of the gif
 	var color []color.Color
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	if err != nil {
+
+	// Get team by ID
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil || id < 0 {
 		app.notFound(w)
 		return
 	}
@@ -52,11 +56,15 @@ func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+
+	// Set color palette based on score
 	if team.Score <= 50 {
 		color = palette1
 	} else {
 		color = palette2
 	}
+
+	// Return gif
 	lissajous(w, float64(team.Score), color)
 }
 

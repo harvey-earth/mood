@@ -14,7 +14,7 @@ func (app *application) routes() http.Handler {
 
 	r.HandleFunc("/", app.home)
 	r.HandleFunc("/team/view/{id}", app.teamView)
-	r.HandleFunc("/team/gif", app.gifView)
+	r.HandleFunc("/team/gif/{id}", app.gifView)
 	r.HandleFunc("/team/create", app.teamCreate).Methods("GET")
 	r.HandleFunc("/team/create", app.teamCreatePost).Methods("POST")
 	r.HandleFunc("/team/vote/{id}", app.teamVote).Methods("GET")
