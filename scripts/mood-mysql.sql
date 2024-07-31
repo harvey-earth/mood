@@ -1,0 +1,11 @@
+CREATE DATABASE mood CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE mood;
+
+CREATE TABLE teams (
+	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	name VARCHAR(100) NOT NULL,
+	score INTEGER NOT NULL,
+	created DATETIME NOT NULL
+);
+
+CREATE INDEX idx_teams_created ON teams(created);
