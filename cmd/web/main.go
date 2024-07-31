@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"image/color"
 	"log"
 	"net/http"
 	"os"
@@ -17,9 +16,6 @@ type application struct {
 	infoLog  *log.Logger
 	teams    *models.TeamModel
 }
-
-var palette1 = []color.Color{color.RGBA{0, 0xff, 0, 0xff}, color.Black}
-var palette2 = []color.Color{color.RGBA{0xff, 0, 0, 0xff}, color.Black}
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
