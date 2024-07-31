@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"image/color"
 	"net/http"
 	"strconv"
 
@@ -34,18 +35,9 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// This function needs to be converted to a static asset to serve from homepage
-func (app *application) badGif(w http.ResponseWriter, r *http.Request) {
-	lissajous(w, 50, palette2)
-}
-
-// This function needs to be converted to a static asset to serve from homepage
-func (app *application) goodGif(w http.ResponseWriter, r *http.Request) {
-	lissajous(w, 1, palette1)
-}
-
 // Takes team id and gets score from database. Returns a lissajous gif based on score.
 func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
+	var color []color.Color
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
 		app.notFound(w)
@@ -60,7 +52,12 @@ func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	lissajous(w, float64(team.Score), palette1)
+	if team.Score <= 50 {
+		color = palette1
+	} else {
+		color = palette2
+	}
+	lissajous(w, float64(team.Score), color)
 }
 
 // Returns form to create a new team
