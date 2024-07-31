@@ -19,7 +19,7 @@ type TeamModel struct {
 	DB *sql.DB
 }
 
-// Creates a new team
+// Insert creates a new team in the database
 func (m *TeamModel) Insert(name string) (int, error) {
 	stmt := "INSERT INTO teams (name, score, created) VALUES(?, ?, UTC_TIMESTAMP())"
 	result, err := m.DB.Exec(stmt, name, 50)
@@ -33,6 +33,7 @@ func (m *TeamModel) Insert(name string) (int, error) {
 	return int(id), nil
 }
 
+// Get returns a row from the database that matches the id
 func (m *TeamModel) Get(id int) (*Team, error) {
 	stmt := "SELECT id, name, score, created FROM teams WHERE id = ?"
 	row := m.DB.QueryRow(stmt, id)
@@ -41,13 +42,13 @@ func (m *TeamModel) Get(id int) (*Team, error) {
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
-		} else {
-			return nil, err
-		}
+		} 
+		return nil, err
 	}
 	return s, nil
 }
 
+// Update takes a team id and new score and updates the score in the database
 func (m *TeamModel) Update(id int, score int) error {
 	stmt := "UPDATE teams SET score = ? WHERE id = ?"
 	_, err := m.DB.Exec(stmt, score, id)
