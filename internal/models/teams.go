@@ -42,7 +42,7 @@ func (m *TeamModel) Get(id int) (*Team, error) {
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNoRecord
-		} 
+		}
 		return nil, err
 	}
 	return s, nil
