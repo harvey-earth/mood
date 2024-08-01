@@ -1,0 +1,24 @@
+{{define "title"}}{{.Name}}{{end}}
+
+{{define "main"}}
+<div>
+	<h1>Vote for {{.Name}}</h1>
+</div>
+<form action="/team/{{.ID}}/vote" method="POST">
+	<div>
+		<input type="radio" id="most-happy" name="vote" value="5">
+		<label for="most-happy">&#x1F601;</label>
+		<input type="radio" id="happy" name="vote" value="4">
+		<label for="happy">&#x1F600;</label>
+		<input type="radio" id="neutral" name="vote" value="3" checked>
+		<label for="neutral">&#x1F610;</label>
+		<input type="radio" id="unhappy" name="vote" value="2">
+		<label for="unhappy">&#x1F61F;</label>
+		<input type="radio" id="most-unhappy" name="vote" value="1">
+		<label for="most-unhappy">&#x1F620;</label>
+	</div>	
+	<div>
+		<input type="submit" value="Vote">
+	</div>
+</form>
+{{end}}

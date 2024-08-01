@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"image/color"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/harvey-earth/mood/internal/models"
@@ -17,9 +17,6 @@ type application struct {
 	infoLog  *log.Logger
 	teams    *models.TeamModel
 }
-
-var palette1 = []color.Color{color.RGBA{0, 0xff, 0, 0xff}, color.Black}
-var palette2 = []color.Color{color.RGBA{0xff, 0, 0, 0xff}, color.Black}
 
 func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
@@ -45,9 +42,12 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:     *addr,
-		ErrorLog: errorLog,
-		Handler:  app.routes(),
+		Addr:         *addr,
+		ErrorLog:     errorLog,
+		Handler:      app.routes(),
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	infoLog.Printf("Starting server on %s", *addr)

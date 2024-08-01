@@ -1,20 +1,24 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
 
-func (app *application) routes() *http.ServeMux {
-	mux := http.NewServeMux()
+	"github.com/gorilla/mux"
+)
+
+func (app *application) routes() http.Handler {
+	r := mux.NewRouter()
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/goodgif", app.goodGif)
-	mux.HandleFunc("/badgif", app.badGif)
-	mux.HandleFunc("/team/view", app.teamView)
-	mux.HandleFunc("/team/gif", app.gifView)
-	mux.HandleFunc("/team/create", app.teamCreate)
-	// mux.HandleFunc("/team/vote", app.teamVote)
+	r.HandleFunc("/team/{id}/view", app.teamView).Methods("GET")
+	r.HandleFunc("/team/{id}/gif", app.gifView).Methods("GET")
+	r.HandleFunc("/team/create", app.teamCreate).Methods("GET")
+	r.HandleFunc("/team/create", app.teamCreatePost).Methods("POST")
+	r.HandleFunc("/team/{id}/vote", app.teamVote).Methods("GET")
+	r.HandleFunc("/team/{id}/vote", app.teamVotePost).Methods("POST")
+	r.HandleFunc("/", app.home).Methods("GET")
 
-	return mux
+	return app.recoverPanic(app.logRequest(secureHeaders(r)))
 }
