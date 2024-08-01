@@ -37,11 +37,12 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 // Takes team id and gets score from database. Returns a lissajous gif based on score.
 func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
-	var palette1 = []color.Color{color.RGBA{98, 203, 49, 255}, color.Black}
-	var palette2 = []color.Color{color.RGBA{255, 182, 6, 255}}
-	var palette3 = []color.Color{color.RGBA{230, 126, 34, 255}}
-	var palette4 = []color.Color{color.RGBA{231, 76, 60, 255}}
-	var palette5 = []color.Color{color.RGBA{255, 0, 0, 255}, color.Black}
+	// Color patterns for gifs. c1 is green and c5 is red
+	var c1 = []color.Color{color.RGBA{98, 203, 49, 255}, color.Black}
+	var c2 = []color.Color{color.RGBA{255, 182, 6, 255}}
+	var c3 = []color.Color{color.RGBA{230, 126, 34, 255}}
+	var c4 = []color.Color{color.RGBA{231, 76, 60, 255}}
+	var c5 = []color.Color{color.RGBA{255, 0, 0, 255}, color.Black}
 	// color will hold the palette color of the gif
 	var color []color.Color
 
@@ -66,15 +67,15 @@ func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
 	// Set color palette based on score
 	switch {
 	case currentScore >= 1 && currentScore <= 20:
-		color = palette1
+		color = c1
 	case currentScore > 20 && currentScore <= 40:
-		color = palette2
+		color = c2
 	case currentScore > 40 && currentScore <= 60:
-		color = palette3
+		color = c3
 	case currentScore > 60 && currentScore <= 80:
-		color = palette4
+		color = c4
 	default:
-		color = palette5
+		color = c5
 	}
 
 	// Return gif
@@ -114,7 +115,7 @@ func (app *application) teamCreatePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	http.Redirect(w, r, fmt.Sprintf("/team/view/%d", id), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/team/%d/view", id), http.StatusSeeOther)
 }
 
 // Returns page showing team information
@@ -229,5 +230,5 @@ func (app *application) teamVotePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	http.Redirect(w, r, fmt.Sprintf("/team/view/%d", id), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/team/%d/view", id), http.StatusSeeOther)
 }

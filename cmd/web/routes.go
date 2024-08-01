@@ -12,13 +12,13 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static", fileServer))
 
-	r.HandleFunc("/", app.home)
-	r.HandleFunc("/team/view/{id}", app.teamView)
-	r.HandleFunc("/team/gif/{id}", app.gifView)
+	r.HandleFunc("/team/{id}/view", app.teamView).Methods("GET")
+	r.HandleFunc("/team/{id}/gif", app.gifView).Methods("GET")
 	r.HandleFunc("/team/create", app.teamCreate).Methods("GET")
 	r.HandleFunc("/team/create", app.teamCreatePost).Methods("POST")
-	r.HandleFunc("/team/vote/{id}", app.teamVote).Methods("GET")
-	r.HandleFunc("/team/vote/{id}", app.teamVotePost).Methods("POST")
+	r.HandleFunc("/team/{id}/vote", app.teamVote).Methods("GET")
+	r.HandleFunc("/team/{id}/vote", app.teamVotePost).Methods("POST")
+	r.HandleFunc("/", app.home).Methods("GET")
 
 	return app.recoverPanic(app.logRequest(secureHeaders(r)))
 }

@@ -1,11 +1,10 @@
-{{define "title"}}Team: {{.Name}}{{end}}
+{{define "title"}}{{.Name}}{{end}}
 
 {{define "main"}}
 <div>
 	<h1>Vote for {{.Name}}</h1>
-	<p>Voting emojis here</p>
 </div>
-<form action="/team/vote/{{.ID}}" method="POST">
+<form action="/team/{{.ID}}/vote" method="POST">
 	<div>
 		<input type="radio" id="most-happy" name="vote" value="5">
 		<label for="most-happy">&#x1F601;</label>

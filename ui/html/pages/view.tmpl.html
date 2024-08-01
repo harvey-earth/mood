@@ -1,4 +1,4 @@
-{{define "title"}}Team: {{.Name}}{{end}}
+{{define "title"}}{{.Name}}{{end}}
 
 {{define "main"}}
     <div class="team">
@@ -6,12 +6,12 @@
             <strong>{{.Name}}</strong>
             <span>Score: {{.Score}}</span>
         </div>
-        <img src="/team/gif/{{.ID}}">
+        <img src="/team/{{.ID}}/gif">
         <div class="metadata">
             <strong>Since</strong>: {{.Created}}
         </div>
     </div>
-    <div style="text-align: center">
-        <a href="../../team/vote/{{.ID}}">Vote</a>
+    <div class="vote-button">
+        <a href="../../team/{{.ID}}/vote">Vote</a>
     </div>
 {{end}}
