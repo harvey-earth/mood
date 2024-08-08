@@ -11,7 +11,7 @@ import (
 func (app *application) routes() http.Handler {
 	r := mux.NewRouter()
 
-	fileServer := http.FileServer(http.FS(ui.Files))
+	fileServer := http.FileServer(http.FS(ui.UIFiles))
 	r.PathPrefix("/static/").Handler(fileServer)
 
 	r.HandleFunc("/team/{id}/view", app.teamView).Methods("GET")

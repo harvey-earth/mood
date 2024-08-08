@@ -24,7 +24,7 @@ func main() {
 	dbUser := os.Getenv("DATABASE_USER")
 	dbPass := os.Getenv("DATABASE_PASSWORD")
 	dbString := dbUser + ":" + dbPass + "@/mood?parseTime=true"
-	dbType := flag.String("database", "mysql", "Database type")
+	dbType := flag.String("database", "sqlite3", "Database type")
 
 	flag.Parse()
 
