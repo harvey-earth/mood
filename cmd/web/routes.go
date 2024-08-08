@@ -3,14 +3,16 @@ package main
 import (
 	"net/http"
 
+	"github.com/harvey-earth/mood/ui"
+
 	"github.com/gorilla/mux"
 )
 
 func (app *application) routes() http.Handler {
 	r := mux.NewRouter()
 
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static", fileServer))
+	fileServer := http.FileServer(http.FS(ui.Files))
+	r.PathPrefix("/static/").Handler(fileServer)
 
 	r.HandleFunc("/team/{id}/view", app.teamView).Methods("GET")
 	r.HandleFunc("/team/{id}/gif", app.gifView).Methods("GET")
