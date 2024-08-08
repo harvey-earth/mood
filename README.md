@@ -10,6 +10,14 @@ To vote a user will select one of 5 emojis corresponding to happiness.
 This will raise or lower the score and affect the gif when viewed.
 
 ## How to setup
-1. While in the `mood` code directory, log in to MySQL/MariaDB and create a username/password combination you intend to use for the application.
-2. Run `source scripts/mood-mysql.sql`
-3. Set the username/password as ENV variables `DATABASE_USERNAME` and `DATABASE_PASSWORD`.
+1. Clone or fork repository
+2. Run `docker build -t mood .`
+3. Run `docker run -p 8080:8080 mood`
+4. Visit http://localhost:8080/
+
+## To Do
+- Unique IP cannot vote twice within an hour
+- Ability to create a team that requires a password to vote
+- Testing
+- Unique team names
+- Implement search by team name for view

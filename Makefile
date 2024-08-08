@@ -6,4 +6,4 @@ fmt:
 vet: fmt
 	go vet ./...
 build: vet
-	go build ./cmd/web
+	go build -o mood ./cmd/web

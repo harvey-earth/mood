@@ -10,6 +10,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/harvey-earth/mood/internal/models"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type application struct {
@@ -23,13 +24,25 @@ func main() {
 	dbUser := os.Getenv("DATABASE_USER")
 	dbPass := os.Getenv("DATABASE_PASSWORD")
 	dbString := dbUser + ":" + dbPass + "@/mood?parseTime=true"
-	dsn := flag.String("dsn", dbString, "MySQL data source name")
+	dbType := flag.String("database", "sqlite3", "Database type")
+
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	db, err := openDB(*dsn)
+	// This holds the database connection string
+	var dsn string
+
+	if *dbType == "sqlite3" {
+		dsn = "./mood.db"
+	} else if *dbType == "mysql" {
+		dsn = dbString
+	} else {
+		errorLog.Fatal("Only mysql and sqlite3 are supported database values.")
+	}
+
+	db, err := openDB(*dbType, dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
@@ -55,8 +68,8 @@ func main() {
 	errorLog.Fatal(err)
 }
 
-func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dsn)
+func openDB(dbType string, dsn string) (*sql.DB, error) {
+	db, err := sql.Open(dbType, dsn)
 	if err != nil {
 		return nil, err
 	}

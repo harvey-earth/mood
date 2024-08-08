@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/harvey-earth/mood/internal/models"
+	"github.com/harvey-earth/mood/ui"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -20,11 +21,11 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/home.tmpl.html",
+		"html/base.tmpl.html",
+		"html/partials/nav.tmpl.html",
+		"html/pages/home.tmpl.html",
 	}
-	ts, err := template.ParseFiles(files...)
+	ts, err := template.ParseFS(ui.UIFiles, files...)
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -85,12 +86,12 @@ func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
 // Returns form to create a new team
 func (app *application) teamCreate(w http.ResponseWriter, r *http.Request) {
 	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/create.tmpl.html",
+		"html/base.tmpl.html",
+		"html/partials/nav.tmpl.html",
+		"html/pages/create.tmpl.html",
 	}
 
-	ts, err := template.ParseFiles(files...)
+	ts, err := template.ParseFS(ui.UIFiles, files...)
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -138,11 +139,11 @@ func (app *application) teamView(w http.ResponseWriter, r *http.Request) {
 	}
 
 	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/view.tmpl.html",
+		"html/base.tmpl.html",
+		"html/partials/nav.tmpl.html",
+		"html/pages/view.tmpl.html",
 	}
-	ts, err := template.ParseFiles(files...)
+	ts, err := template.ParseFS(ui.UIFiles, files...)
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -172,11 +173,11 @@ func (app *application) teamVote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	files := []string{
-		"./ui/html/base.tmpl.html",
-		"./ui/html/partials/nav.tmpl.html",
-		"./ui/html/pages/vote.tmpl.html",
+		"html/base.tmpl.html",
+		"html/partials/nav.tmpl.html",
+		"html/pages/vote.tmpl.html",
 	}
-	ts, err := template.ParseFiles(files...)
+	ts, err := template.ParseFS(ui.UIFiles, files...)
 	if err != nil {
 		app.serverError(w, err)
 		return
