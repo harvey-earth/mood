@@ -1,5 +1,5 @@
 # Use the official Golang image as the base image
-FROM golang:1.22.4 AS builder
+FROM golang:1.22.4-bullseye AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN make
+RUN make && ./scripts/database/setup.sh
 
 # Use a minimal image for the final build
 FROM debian:bullseye-slim
@@ -29,4 +29,4 @@ COPY --from=builder /app/mood /app/mood.db ./
 EXPOSE 8080
 
 # Command to run the executable
-CMD ["/app/mood --addr=':8080'"]
+CMD ["/app/mood", "--addr=:8080"]
