@@ -15,6 +15,11 @@ This will raise or lower the score and affect the gif when viewed.
 3. Run `docker run -p 8080:8080 mood`
 4. Visit http://localhost:8080/
 
+### With MySQL
+1. Set `DATABASE_HOST`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD` as environment variables.
+2. While logged into MySQL run `source scripts/database/mood-mysql.sql` to create the database and tables.
+3. Run mood with the `--database=mysql` flag.
+
 ## To Do
 - Unique IP cannot vote twice within an hour
 - Ability to create a team that requires a password to vote
