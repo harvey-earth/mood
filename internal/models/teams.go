@@ -21,7 +21,7 @@ type TeamModel struct {
 
 // Insert creates a new team in the database
 func (m *TeamModel) Insert(name string) (int, error) {
-	stmt := "INSERT INTO teams (name, score, created) VALUES(?, ?, UTC_TIMESTAMP())"
+	stmt := "INSERT INTO teams (name, score, created) VALUES(?, ?, CURRENT_TIMESTAMP)"
 	result, err := m.DB.Exec(stmt, name, 50)
 	if err != nil {
 		return 0, nil
