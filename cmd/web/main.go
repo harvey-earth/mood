@@ -23,7 +23,8 @@ func main() {
 	addr := flag.String("addr", ":8080", "HTTP network address")
 	dbUser := os.Getenv("DATABASE_USER")
 	dbPass := os.Getenv("DATABASE_PASSWORD")
-	dbString := dbUser + ":" + dbPass + "@/mood?parseTime=true"
+	dbHost := os.Getenv("DATABASE_HOST")
+	dbString := dbUser + ":" + dbPass + "@" + dbHost + "/mood?parseTime=true"
 	dbType := flag.String("database", "sqlite3", "Database type")
 
 	flag.Parse()
