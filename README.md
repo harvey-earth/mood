@@ -13,3 +13,10 @@ This will raise or lower the score and affect the gif when viewed.
 1. While in the `mood` code directory, log in to MySQL/MariaDB and create a username/password combination you intend to use for the application.
 2. Run `source scripts/mood-mysql.sql`
 3. Set the username/password as ENV variables `DATABASE_USERNAME` and `DATABASE_PASSWORD`.
+
+## To Do
+- Unique IP cannot vote twice within an hour
+- Ability to create a team that requires a password to vote
+- Testing
+- Unique team names
+- Implement search by team name for view
