@@ -1,8 +1,8 @@
 name: Build mood release
 on:
-    push:
-        tags:
-            - 'v*'
+    release:
+        types: [published]
+
 jobs:
     build:
         name: Build mood binaries
