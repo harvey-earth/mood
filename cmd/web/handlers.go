@@ -36,6 +36,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ping(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("pong"))
+}
+
 // Takes team id and gets score from database. Returns a lissajous gif based on score.
 func (app *application) gifView(w http.ResponseWriter, r *http.Request) {
 	// Color patterns for gifs. c1 is green and c5 is red
