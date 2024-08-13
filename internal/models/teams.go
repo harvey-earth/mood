@@ -6,6 +6,13 @@ import (
 	"time"
 )
 
+// TeamModelInterface is interface for teams model
+type TeamModelInterface interface {
+	Insert(name string) (int, error)
+	Get(id int) (*Team, error)
+	Update(id int, score int) error
+}
+
 // Team table model
 type Team struct {
 	ID      int
