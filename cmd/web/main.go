@@ -16,7 +16,7 @@ import (
 type application struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
-	teams    *models.TeamModel
+	teams    models.TeamModelInterface
 }
 
 func main() {

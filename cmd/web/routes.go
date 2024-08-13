@@ -20,6 +20,7 @@ func (app *application) routes() http.Handler {
 	r.HandleFunc("/team/create", app.teamCreatePost).Methods("POST")
 	r.HandleFunc("/team/{id}/vote", app.teamVote).Methods("GET")
 	r.HandleFunc("/team/{id}/vote", app.teamVotePost).Methods("POST")
+	r.HandleFunc("/ping", ping).Methods("GET")
 	r.HandleFunc("/", app.home).Methods("GET")
 
 	return app.recoverPanic(app.logRequest(secureHeaders(r)))
