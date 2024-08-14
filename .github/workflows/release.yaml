@@ -10,6 +10,9 @@ jobs:
             matrix:
                 goos: [linux, darwin, windows]
                 goarch: [amd64, arm64, 386]
+            exclude:
+                - goos: darwin
+                  goarch: 386
 
         steps:
             - name: Checkout code
@@ -29,7 +32,7 @@ jobs:
               if: startsWith(matrix.goos, 'windows')
               run: |
                 cd dist
-                zip mood-${{ matrix.goos }}-${{ matrix.goarch }}.zip mood-${{ matrix.goos }}-${{ matrix.goarch }}.exe
+                zip mood-${{ matrix.goos }}-${{ matrix.goarch }}.zip mood-${{ matrix.goos }}-${{ matrix.goarch }}
                 cd ..
 
             - name: Archive binaries
