@@ -1,143 +1,49 @@
 name: Build mood release
-on: release
+on:
+    release:
+        types: [published]
 jobs:
-    release-linux-386:
-        name: release linux/386
+    build:
+        name: Build mood binaries
         runs-on: ubuntu-latest
-<<<<<<< Updated upstream
-        steps:
-        - uses: actions/checkout@master
-        - name: compile and release
-          uses: ngs/go-release.action@v1.0.2
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOARCH: "386"
-            GOOS: linux
-            EXTRA_FILES: "LICENSE"
-    release-linux-amd64:
-        name: release linux/amd64
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@master
-        - name: compile and release
-          uses: ngs/go-release.action@v1.0.2
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOARCH: "amd64"
-            GOOS: linux
-            EXTRA_FILES: "LICENSE"
-    release-linux-arm:
-        name: release linux/arm
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@master
-        - name: compile and release
-          uses: ngs/go-release.action@v1.0.2
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOARCH: "arm"
-            GOOS: linux
-            EXTRA_FILES: "LICENSE"
-    release-linux-arm64:
-        name: release linux/arm64
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@master
-        - name: compile and release
-          uses: ngs/go-release.action@v1.0.2
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOARCH: "arm64"
-            GOOS: linux
-            EXTRA_FILES: "LICENSE"
-    release-darwin-amd64:
-        name: release darwin/amd64
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@master
-        - name: compile and release
-          uses: ngs/go-release.action@v1.0.2
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOARCH: "amd64"
-            GOOS: darwin 
-            EXTRA_FILES: "LICENSE"
-    release-darwin-arm64:
-        name: release darwin/arm64
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@master
-        - name: compile and release
-          uses: ngs/go-release.action@v1.0.2
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOARCH: "arm64"
-            GOOS: darwin 
-            EXTRA_FILES: "LICENSE"
-    release-windows-386:
-        name: release windows/386
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@master
-        - name: compile and release
-          uses: ngs/go-release.action@v1.0.2
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOARCH: "386"
-            GOOS: windows 
-            EXTRA_FILES: "LICENSE"
-    release-windows-amd64:
-        name: release windows/amd64
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@master
-        - name: compile and release
-          uses: ngs/go-release.action@v1.0.2
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GOARCH: "amd64"
-            GOOS: windows 
-            EXTRA_FILES: "LICENSE"
-=======
+        strategy:
+            matrix:
+                goos: [linux, darwin, windows]
+                goarch: [amd64, arm64, 386]
 
-    strategy:
-        matrix:
-            goos: [linux, darwin, windows]
-            goarch: [amd64, arm64, 386]
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@master
 
-    steps:
-        - name: Checkout code
-          uses: actions/checkout@master
+            - name: Setup go
+              uses: actions/setup-go@master
+              with:
+                go-version: 1.22.4
 
-        - name: Setup go
-          uses: actions/setup-go@master
-          with:
-            go-version: 1.22.4
+            - name: Build binary
+              run: |
+                mkdir -p dist
+                GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/mood-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/web
 
-        - name: Build binary
-          run: |
-            mkdir -p dist
-             GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o dist/mood-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/web
+            - name: Archive binaries
+              if: startsWith(matrix.goos, 'windows')
+              run: |
+                cd dist
+                zip mood-${{ matrix.goos }}-${{ matrix.goarch }}.zip mood-${{ matrix.goos }}-${{ matrix.goarch }}.exe
+                cd ..
 
-        - name: Archive binaries
-          if: startsWith(matrix.goos, 'windows')
-          run: |
-            cd dist
-            zip mood-${{ matrix.goos }}-${{ matrix.goarch }}.zip mood-${{ matrix.goos }}-${{ matrix.goarch }}.exe
-            cd ..
+            - name: Archive binaries
+              if: "!startsWith(matrix.goos, 'windows')"
+              run: |
+                cd dist
+                tar -czf mood-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz mood-${{ matrix.goos }}-${{ matrix.goarch }}
+                cd ..
 
-        - name: Archive binaries
-          if: "!startsWith(matrix.goos, 'windows')"
-          run: |
-            cd dist
-            tar -czf mood-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz mood-${{ matrix.goos }}-${{ matrix.goarch }}
-            cd ..
-
-        - name: Upload binaries
-          uses: actions/upload-artifact@v3
-          with:
-            name: mood-${{ matrix.goos }}-${{ matrix.goarch }}
-            path: dist/mood-${{ matrix.goos }}-${{ matrix.goarch }}.*
+            - name: Upload binaries
+              uses: actions/upload-artifact@v3
+              with:
+                name: mood-${{ matrix.goos }}-${{ matrix.goarch }}
+                path: dist/mood-${{ matrix.goos }}-${{ matrix.goarch }}.*
   
     release:
       name: Create Release
@@ -160,4 +66,3 @@ jobs:
 
         - name: Post Release Info
           run: echo "Release created with the following files: " && ls dist/
->>>>>>> Stashed changes
