@@ -46,23 +46,20 @@ jobs:
                 path: dist/mood-${{ matrix.goos }}-${{ matrix.goarch }}.*
   
     release:
-      name: Create Release
-      runs-on: ubuntu-latest
-      needs: build
+        name: Create Release
+        runs-on: ubuntu-latest
+        needs: build
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
 
-        - name: Download binaries
-          uses: actions/download-artifact@v3
-          with:
-            name: mood-${{ matrix.goos }}-${{ matrix.goarch }}
+            - name: Download binaries
+              uses: actions/download-artifact@v3
+              with:
+                name: mood-${{ matrix.goos }}-${{ matrix.goarch }}
 
-        - name: Create GitHub Release
-          uses: softprops/action-gh-release@v1
-          with:
-            files: dist/*
-
-        - name: Post Release Info
-          run: echo "Release created with the following files: " && ls dist/
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v1
+              with:
+                files: dist/*
