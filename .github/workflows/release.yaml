@@ -1,7 +1,9 @@
 name: Build mood release
 on:
-    release:
-        types: [published]
+    push:
+        tags:
+            - 'v*.*.*'
+
 jobs:
     build:
         name: Build mood binaries
@@ -63,6 +65,6 @@ jobs:
                 path: dist/
 
             - name: Create GitHub Release
-              uses: softprops/action-gh-release@v1
+              uses: softprops/action-gh-release@v2
               with:
                 files: dist/*
