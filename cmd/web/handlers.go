@@ -120,7 +120,7 @@ func (app *application) teamCreatePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	http.Redirect(w, r, fmt.Sprintf("/team/%d/view", id), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/teams/%d", id), http.StatusSeeOther)
 }
 
 // Returns page showing team information
@@ -235,5 +235,5 @@ func (app *application) teamVotePost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	http.Redirect(w, r, fmt.Sprintf("/team/%d/view", id), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/teams/%d", id), http.StatusSeeOther)
 }

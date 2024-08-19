@@ -36,18 +36,18 @@ func TestTeamView(t *testing.T) {
 	}{
 		{
 			name:         "Good ID",
-			path:         "/team/1/view",
+			path:         "/teams/1",
 			expectedCode: http.StatusOK,
 			expectedBody: "Example Team",
 		},
 		{
 			name:         "Bad ID",
-			path:         "/team/2/view",
+			path:         "/teams/2",
 			expectedCode: http.StatusNotFound,
 		},
 		{
 			name:         "String ID",
-			path:         "/team/foo/view",
+			path:         "/teams/foo",
 			expectedCode: http.StatusNotFound,
 		},
 	}
