@@ -1,2 +1,5 @@
 # Exclude executable
 mood
+
+# Exclude database changes
+mood.db
