@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application
-RUN make && ./scripts/database/setup.sh
+RUN make && ./scripts/database/setup.sh sqlite
 
 # Use a minimal image for the final build
 FROM debian:bullseye-slim

@@ -3,14 +3,17 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/harvey-earth/mood/internal/models"
+	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
+
+	"github.com/harvey-earth/mood/internal/models"
 )
 
 type application struct {
@@ -24,7 +27,7 @@ func main() {
 	dbUser := os.Getenv("DATABASE_USER")
 	dbPass := os.Getenv("DATABASE_PASSWORD")
 	dbHost := os.Getenv("DATABASE_HOST")
-	dbString := dbUser + ":" + dbPass + "@" + dbHost + "/mood?parseTime=true"
+	dbName := os.Getenv("DATABASE_NAME")
 	dbType := flag.String("database", "sqlite3", "Database type")
 
 	flag.Parse()
@@ -38,9 +41,11 @@ func main() {
 	if *dbType == "sqlite3" {
 		dsn = "./mood.db"
 	} else if *dbType == "mysql" {
-		dsn = dbString
+		dsn = fmt.Sprintf("%s:%s@%s/%s?parseTime=true", dbUser, dbPass, dbHost, dbName)
+	} else if *dbType == "psql" {
+		dsn = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s", dbHost, 5432, dbUser, dbPass, dbName)
 	} else {
-		errorLog.Fatal("Only mysql and sqlite3 are supported database values.")
+		errorLog.Fatal("Only mysql, psql, and sqlite3 are supported database values.")
 	}
 
 	db, err := openDB(*dbType, dsn)
