@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"flag"
 	"fmt"
@@ -14,6 +15,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/harvey-earth/mood/internal/models"
+	"go.opentelemetry.io/otel"
+	stdout "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/propagation"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 type application struct {
@@ -22,7 +27,19 @@ type application struct {
 	teams    models.TeamModelInterface
 }
 
+var tracer = otel.Tracer("mood")
+
 func main() {
+	tp, err := initTracer()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		if err := tp.Shutdown(context.Background()); err != nil {
+			log.Printf("Error shutting down tracer provider: %v", err)
+		}
+	}()
+
 	addr := flag.String("addr", ":8080", "HTTP network address")
 	dbUser := os.Getenv("DATABASE_USER")
 	dbPass := os.Getenv("DATABASE_PASSWORD")
@@ -83,4 +100,18 @@ func openDB(dbType string, dsn string) (*sql.DB, error) {
 		return nil, err
 	}
 	return db, nil
+}
+
+func initTracer() (*sdktrace.TracerProvider, error) {
+	exporter, err := stdout.New(stdout.WithPrettyPrint())
+	if err != nil {
+		return nil, err
+	}
+	tp := sdktrace.NewTracerProvider(
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
+		sdktrace.WithBatcher(exporter),
+	)
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
+	return tp, nil
 }
