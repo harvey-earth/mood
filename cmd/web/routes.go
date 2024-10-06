@@ -6,10 +6,12 @@ import (
 	"github.com/harvey-earth/mood/ui"
 
 	"github.com/gorilla/mux"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gorilla/mux/otelmux"
 )
 
 func (app *application) routes() http.Handler {
 	r := mux.NewRouter()
+	r.Use(otelmux.Middleware("mood"))
 
 	fileServer := http.FileServer(http.FS(ui.UIFiles))
 	r.PathPrefix("/static/").Handler(fileServer)
